@@ -1,0 +1,653 @@
+* {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #008080;
+      font-family: 'Tahoma', 'Segoe UI', 'MS Sans Serif', Geneva, sans-serif;
+      font-size: 11px;
+    }
+
+    /* Infinite Canvas */
+    #grid-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      z-index: 1;
+    }
+
+    /* Common Retro 3D Bevel Styles */
+    .bevel-raised {
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    }
+
+    .bevel-sunken {
+      background: #ffffff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0px #000000;
+    }
+
+    /* Retro Window Title Bar */
+    .retro-titlebar {
+      background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 3px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.5px;
+      font-size: 11px;
+    }
+
+    .retro-close-btn {
+      width: 16px;
+      height: 14px;
+      background: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #000000;
+      border-bottom: 1px solid #000000;
+      color: #000000;
+      font-size: 9px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .retro-close-btn:active {
+      border-top: 1px solid #000000;
+      border-left: 1px solid #000000;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding-top: 1px;
+      padding-left: 1px;
+    }
+
+    /* Top-Right Control Toolbar */
+    #top-controls {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 20;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .retro-btn {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+    }
+
+    .retro-btn:active, .retro-btn.pressed {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0px #808080;
+    }
+
+    .retro-btn:active svg, .retro-btn.pressed svg {
+      transform: translate(1px, 1px);
+    }
+
+    .retro-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    /* Sidebar Window */
+    #sidebar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 200px;
+      z-index: 10;
+      padding: 3px;
+      transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    #sidebar.hidden {
+      transform: translateX(-220px);
+    }
+
+    #sidebar-toggle-tab {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 9;
+      padding: 5px 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .sidebar-inner {
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Search Box */
+    .search-container {
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 22px;
+      padding: 2px 5px;
+      outline: none;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #000000;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    textarea.search-input {
+      height: 60px;
+      resize: vertical;
+    }
+
+    select.search-input {
+      height: 22px;
+      padding: 2px 4px;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-size: 11px;
+      color: #000000;
+      cursor: pointer;
+    }
+
+    /* Node List */
+    .node-palette {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: calc(100vh - 110px);
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    /* เส้นแยกหมวดหมู่สีใน palette */
+    .palette-divider {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 2px 2px 2px;
+      padding-bottom: 2px;
+    }
+
+    .palette-divider-label {
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .palette-divider-line {
+      flex: 1;
+      height: 0;
+      border-top: 2px dotted currentColor;
+      opacity: 0.55;
+    }
+
+    .palette-divider[data-group="terminal"] {
+      color: #ff9100;
+    }
+
+    .palette-divider[data-group="program"] {
+      color: #4da6ff;
+    }
+
+    .palette-divider[data-group="action"] {
+      color: #e0b3ff;
+    }
+
+    .palette-divider[data-group="message"] {
+      color: #33ff66;
+    }
+
+    .palette-divider[data-group="image"] {
+      color: #ff5555;
+    }
+
+    .palette-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+
+    .palette-item:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    .palette-item:active {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    .palette-item-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #2a3b4c;
+      border: 1px solid #ffffff;
+      box-shadow: inset 1px 1px 0px #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00ffcc;
+      font-family: serif;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .palette-item-text {
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .palette-item.locked {
+      opacity: 0.4;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    .palette-item-icon.icon-start,
+    .palette-item-icon.icon-end {
+      background: #7a4a1e;
+      color: #ffd9a0;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-style: normal;
+    }
+
+    .palette-item-icon.icon-action {
+      background: #3d1a5c;
+      color: #e0b3ff;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-style: normal;
+    }
+
+    .palette-item-icon.icon-debug,
+    .palette-item-icon.icon-console {
+      background: #0b1a0b;
+      color: #33ff66;
+      border: 1px solid #33ff66;
+      font-family: 'Courier New', Courier, monospace;
+      font-style: normal;
+    }
+
+    .palette-item-icon.icon-image {
+      background: #3d0d0d;
+      color: #ff7777;
+      border: 1px solid #ff5555;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-style: normal;
+    }
+
+    .palette-item-icon.icon-file {
+      background: #3d1a5c;
+      color: #e0b3ff;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-style: normal;
+    }
+
+    /* Retro Context Menu */
+    #retro-context-menu {
+      position: absolute;
+      display: none;
+      z-index: 100;
+      min-width: 120px;
+      padding: 2px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .context-menu-item {
+      padding: 4px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .context-menu-item:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    .context-separator {
+      height: 1px;
+      border-top: 1px solid #808080;
+      border-bottom: 1px solid #ffffff;
+      margin: 2px 0;
+    }
+
+    /* Retro Modal Dialog Overlay */
+    .retro-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 150;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .retro-dialog-box {
+      width: 320px;
+      padding: 3px;
+    }
+
+    .dialog-content {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .dialog-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .dialog-row-flex {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .dialog-btn {
+      min-width: 65px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .dialog-btn:active {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    /* Flow Folder Popup */
+    #folder-dialog-box {
+      width: 560px;
+      max-width: 90vw;
+    }
+
+    .folder-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .folder-hint {
+      color: #404040;
+      font-size: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 8px;
+      background: #ffffff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0px #000000;
+    }
+
+    .flow-grid:empty::after {
+      content: 'ยังไม่มีไฟล์ที่บันทึกไว้';
+      color: #808080;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 18px 0;
+    }
+
+    .flow-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #808080;
+      padding: 18px 0;
+    }
+
+    .flow-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 6px 6px 6px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .flow-card:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    .flow-card:hover .flow-card-name,
+    .flow-card:hover .flow-card-meta {
+      color: #ffffff;
+    }
+
+    .flow-card.active {
+      background: #b8b8ff;
+    }
+
+    .flow-card img {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+
+    .flow-card-name {
+      font-weight: bold;
+      font-size: 10px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #000000;
+    }
+
+    .flow-card-meta {
+      font-size: 9px;
+      color: #606060;
+    }
+
+    .flow-card-del {
+      position: absolute;
+      top: 2px;
+      right: 3px;
+      width: 14px;
+      height: 14px;
+      line-height: 12px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: bold;
+      color: #000000;
+      background: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #000000;
+      border-bottom: 1px solid #000000;
+      cursor: pointer;
+    }
+
+    .flow-card-del:hover {
+      background: #ff5555;
+      color: #ffffff;
+    }
+
+    /* Toast สำหรับข้อความสถานะการบันทึกไฟล์ */
+    #flow-toast {
+      display: none;
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      z-index: 9000;
+      max-width: 80vw;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #000000;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: 2px 2px 0px #000000;
+    }
+
+    /* Node settings dialog (Agent / If / Math ... มีหลายช่อง) */
+    #settings-dialog-box {
+      width: 340px;
+      max-width: 92vw;
+    }
+
+    #settings-dialog-body {
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .dialog-hint {
+      color: #404040;
+      font-size: 10px;
+    }
+
+    /* ===== Scrollbar แบบ Win98 ให้เข้ากับธีม ===== */
+    *::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background-color: #c0c0c0;
+      background-image:
+        linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%),
+        linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%);
+      background-size: 4px 4px;
+      background-position: 0 0, 2px 2px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    }
+
+    *::-webkit-scrollbar-button:single-button {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background-color: #c0c0c0;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    }
+
+    *::-webkit-scrollbar-button:single-button:active {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0px #808080;
+    }
+
+    *::-webkit-scrollbar-button:single-button:vertical:decrement {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M4 10 L8 6 L12 10 Z' fill='%23000'/%3E%3C/svg%3E");
+    }
+
+    *::-webkit-scrollbar-button:single-button:vertical:increment {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M4 6 L8 10 L12 6 Z' fill='%23000'/%3E%3C/svg%3E");
+    }
+
+    *::-webkit-scrollbar-button:single-button:horizontal:decrement {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M10 4 L6 8 L10 12 Z' fill='%23000'/%3E%3C/svg%3E");
+    }
+
+    *::-webkit-scrollbar-button:single-button:horizontal:increment {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M6 4 L10 8 L6 12 Z' fill='%23000'/%3E%3C/svg%3E");
+    }
+
+    *::-webkit-scrollbar-corner {
+      background: #c0c0c0;
+    }
+
+    /* เบราว์เซอร์ที่ไม่รองรับ ::-webkit-scrollbar (เช่น Firefox) */
+    @supports not selector(::-webkit-scrollbar) {
+      * {
+        scrollbar-width: auto;
+        scrollbar-color: #c0c0c0 #e8e8e8;
+      }
+    }

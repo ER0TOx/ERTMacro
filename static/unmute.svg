@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- ฐานปุ่มสีเทาคลาสสิก -->
+  <rect x="0" y="0" width="32" height="32" fill="#c0c0c0" />
+
+  <!-- ขอบนูน 3D (แสงตกกระทบ บน-ซ้าย) -->
+  <path d="M0 0 H32 V2 H2 V32 H0 Z" fill="#ffffff" />
+
+  <!-- ขอบนูน 3D (เงา ล่าง-ขวา) -->
+  <path d="M2 30 H30 V2 H32 V32 H0 V30 Z" fill="#000000" />
+  <path d="M2 28 H28 V4 H30 V30 H2 Z" fill="#808080" />
+
+  <!-- ตัวลำโพง (Speaker Body) -->
+  <rect x="6" y="12" width="4" height="8" fill="#000000" />
+  <rect x="7" y="13" width="3" height="6" fill="#404040" />
+
+  <!-- กรวยลำโพง (Cone) -->
+  <polygon points="10,12 15,8 16,8 16,24 15,24 10,20" fill="#000000" />
+  <polygon points="11,13 14,10 15,10 15,22 14,22 11,19" fill="#808080" />
+  <polygon points="11,13 14,10 15,10 15,14" fill="#dfdfdf" />
+
+  <!-- สัญลักษณ์กากบาท Mute สีแดงพิกเซล (X) -->
+  <!-- เงาดำของเส้นกากบาท -->
+  <rect x="20" y="12" width="2" height="2" fill="#000000" />
+  <rect x="22" y="14" width="2" height="2" fill="#000000" />
+  <rect x="24" y="16" width="2" height="2" fill="#000000" />
+  <rect x="26" y="18" width="2" height="2" fill="#000000" />
+  <rect x="26" y="12" width="2" height="2" fill="#000000" />
+  <rect x="20" y="18" width="2" height="2" fill="#000000" />
+
+  <!-- ตัวกากบาทสีแดงสด -->
+  <rect x="19" y="11" width="2" height="2" fill="#d00000" />
+  <rect x="21" y="13" width="2" height="2" fill="#d00000" />
+  <rect x="23" y="15" width="2" height="2" fill="#d00000" />
+  <rect x="25" y="17" width="2" height="2" fill="#d00000" />
+  <rect x="25" y="11" width="2" height="2" fill="#d00000" />
+  <rect x="19" y="17" width="2" height="2" fill="#d00000" />
+</svg>

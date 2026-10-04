@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" shape-rendering="crispEdges">
+  <!-- ฐานปุ่มสีเทาคลาสสิก -->
+  <rect x="0" y="0" width="48" height="48" fill="#C0C0C0" />
+  
+  <!-- ขอบนูน 3D สไตล์ Retro (แสงตกกระทบ บน-ซ้าย) -->
+  <path d="M0 0 H48 V2 H2 V48 H0 Z" fill="#FFFFFF" />
+  <path d="M2 2 H46 V4 H4 V46 H2 Z" fill="#DFDFDF" />
+  
+  <!-- ขอบนูน 3D สไตล์ Retro (เงา ล่าง-ขวา) -->
+  <path d="M4 44 H44 V4 H46 V46 H4 Z" fill="#808080" />
+  <path d="M2 46 H48 V0 H46 V46 H0 V48 H48 Z" fill="#000000" />
+  
+  <!-- ไอคอน Play (สามเหลี่ยม) พร้อมเงาสไตล์ Retro -->
+  <!-- เงาไอคอนสีขาวด้านล่างขวา -->
+  <polygon points="19,15 35,25 19,35" fill="#FFFFFF" transform="translate(1, 1)" />
+  <!-- ตัวไอคอน Play สีดำคมชัด -->
+  <polygon points="19,15 35,25 19,35" fill="#000000" />
+</svg>

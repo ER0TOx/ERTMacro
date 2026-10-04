@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EarthMarco</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Infinite Grid Canvas -->
+  <canvas id="grid-canvas"></canvas>
+
+  <!-- Top-Right Play/Pause Control Toolbar -->
+  <div id="top-controls" class="bevel-raised">
+    <button id="playback-btn" class="bevel-raised retro-btn" title="Toggle Play / Pause">
+      <svg id="svg-play" viewBox="0 0 32 32" width="26" height="26" shape-rendering="crispEdges">
+        <polygon points="11,7 23,16 11,25" fill="#ffffff" transform="translate(1, 1)" />
+        <polygon points="11,7 23,16 11,25" fill="#000000" />
+      </svg>
+      <svg id="svg-pause" viewBox="0 0 32 32" width="26" height="26" shape-rendering="crispEdges" style="display: none;">
+        <rect x="9" y="7" width="4" height="18" fill="#ffffff" transform="translate(1, 1)" />
+        <rect x="9" y="7" width="4" height="18" fill="#000000" />
+        <rect x="17" y="7" width="4" height="18" fill="#ffffff" transform="translate(1, 1)" />
+        <rect x="17" y="7" width="4" height="18" fill="#000000" />
+      </svg>
+    </button>
+    <button id="folder-btn" class="bevel-raised retro-btn" title="Open Flow Folder" onclick="openFolderPopup()">
+      <img src="folder.svg" width="30" height="30" alt="">
+    </button>
+    <button id="save-btn" class="bevel-raised retro-btn" title="Save Flow" onclick="saveCurrentFlow()" style="display: none;">
+      <img src="save.svg" width="30" height="30" alt="">
+    </button>
+  </div>
+
+  <!-- Reopen Sidebar Tab -->
+  <div id="sidebar-toggle-tab" class="bevel-raised" onclick="toggleSidebar()">
+    ▶ NODES
+  </div>
+
+  <!-- Collapsible Sidebar -->
+  <div id="sidebar" class="bevel-raised">
+    <div class="retro-titlebar">
+      <span>NODES.EXE</span>
+      <div class="retro-close-btn" onclick="toggleSidebar()">✕</div>
+    </div>
+    <div class="sidebar-inner">
+      <div class="search-container">
+        <input type="text" id="search-box" class="bevel-sunken search-input" placeholder="Search..." oninput="handleSearch()">
+      </div>
+      <div class="node-palette" id="palette-list">
+        <div class="palette-divider" data-group="terminal">
+          <span class="palette-divider-label">Start / End</span>
+          <span class="palette-divider-line"></span>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-start" onclick="spawnNode('Start')">
+          <div class="palette-item-icon icon-start">S</div>
+          <div class="palette-item-text">Start</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-end" onclick="spawnNode('End')">
+          <div class="palette-item-icon icon-end">E</div>
+          <div class="palette-item-text">End</div>
+        </div>
+
+        <div class="palette-divider" data-group="program">
+          <span class="palette-divider-label">Program</span>
+          <span class="palette-divider-line"></span>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-function" onclick="spawnNode('Function')">
+          <div class="palette-item-icon">ƒ</div>
+          <div class="palette-item-text">Function</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-delay" onclick="spawnNode('Delay')">
+          <div class="palette-item-icon">D</div>
+          <div class="palette-item-text">Delay</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-if" onclick="spawnNode('If')">
+          <div class="palette-item-icon">?</div>
+          <div class="palette-item-text">If</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-loopfor" onclick="spawnNode('LoopFor')">
+          <div class="palette-item-icon">↻</div>
+          <div class="palette-item-text">LoopFor</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-loopinf" onclick="spawnNode('LoopInf')">
+          <div class="palette-item-icon">∞</div>
+          <div class="palette-item-text">LoopInf</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-while" onclick="spawnNode('While')">
+          <div class="palette-item-icon">W</div>
+          <div class="palette-item-text">While</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-var" onclick="spawnNode('Var')">
+          <div class="palette-item-icon">$</div>
+          <div class="palette-item-text">Var</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-setvar" onclick="spawnNode('SetVar')">
+          <div class="palette-item-icon">=</div>
+          <div class="palette-item-text">SetVar</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-math" onclick="spawnNode('Math')">
+          <div class="palette-item-icon">±</div>
+          <div class="palette-item-text">Math</div>
+        </div>
+
+        <div class="palette-divider" data-group="action">
+          <span class="palette-divider-label">Action</span>
+          <span class="palette-divider-line"></span>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-click" onclick="spawnNode('Click')">
+          <div class="palette-item-icon icon-action">C</div>
+          <div class="palette-item-text">Click</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-mouseposition" onclick="spawnNode('MousePosition')">
+          <div class="palette-item-icon icon-action">M</div>
+          <div class="palette-item-text">MousePosition</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-keyboard" onclick="spawnNode('Keyboard')">
+          <div class="palette-item-icon icon-action">K</div>
+          <div class="palette-item-text">Keyboard</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-agent" onclick="spawnNode('Agent')">
+          <div class="palette-item-icon icon-action">A</div>
+          <div class="palette-item-text">Agent</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-url" onclick="spawnNode('URL')">
+          <div class="palette-item-icon icon-action">U</div>
+          <div class="palette-item-text">URL</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-file" onclick="spawnNode('File')">
+          <div class="palette-item-icon icon-file">F</div>
+          <div class="palette-item-text">File</div>
+        </div>
+
+        <div class="palette-divider" data-group="image">
+          <span class="palette-divider-label">Image Processing</span>
+          <span class="palette-divider-line"></span>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-screenshot" onclick="spawnNode('Screenshot')">
+          <div class="palette-item-icon icon-image">▣</div>
+          <div class="palette-item-text">Screenshot</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-featurematching" onclick="spawnNode('FeatureMatching')">
+          <div class="palette-item-icon icon-image">≈</div>
+          <div class="palette-item-text">FeatureMatching</div>
+        </div>
+
+        <div class="palette-divider" data-group="message">
+          <span class="palette-divider-label">Message</span>
+          <span class="palette-divider-line"></span>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-alert" onclick="spawnNode('Alert')">
+          <div class="palette-item-icon icon-console">!</div>
+          <div class="palette-item-text">Alert</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-confirm" onclick="spawnNode('Confirm')">
+          <div class="palette-item-icon icon-console">?</div>
+          <div class="palette-item-text">Confirm</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-text" onclick="spawnNode('Text')">
+          <div class="palette-item-icon icon-console">T</div>
+          <div class="palette-item-text">Text</div>
+        </div>
+        <div class="palette-item bevel-raised" id="node-item-debug" onclick="spawnNode('Debug')">
+          <div class="palette-item-icon icon-console">&gt;</div>
+          <div class="palette-item-text">Debug</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Context Menu -->
+  <div id="retro-context-menu" class="bevel-raised">
+    <div class="context-menu-item" onclick="openRenameModal()">✏️ Rename</div>
+    <div class="context-separator"></div>
+    <div class="context-menu-item" onclick="deleteTargetNode()">🗑️ Delete</div>
+  </div>
+
+  <!-- Retro Modal: Rename Node -->
+  <div id="rename-dialog-overlay" class="retro-modal-overlay">
+    <div class="bevel-raised retro-dialog-box" style="width: 280px;">
+      <div class="retro-titlebar">
+        <span>RENAME NODE</span>
+        <div class="retro-close-btn" onclick="closeRenameModal()">✕</div>
+      </div>
+      <div class="dialog-content">
+        <label for="rename-input" style="font-weight: bold;">New Node Name:</label>
+        <input type="text" id="rename-input" class="bevel-sunken search-input" autocomplete="off">
+        <div class="dialog-actions">
+          <button class="bevel-raised dialog-btn" onclick="saveNodeRename()">OK</button>
+          <button class="bevel-raised dialog-btn" onclick="closeRenameModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Modal: Node Settings (Double-Click) -->
+  <div id="settings-dialog-overlay" class="retro-modal-overlay">
+    <div class="bevel-raised retro-dialog-box" id="settings-dialog-box">
+      <div class="retro-titlebar">
+        <span id="settings-dialog-title">PROPERTIES</span>
+        <div class="retro-close-btn" onclick="closeSettingsModal()">✕</div>
+      </div>
+      <div class="dialog-content" id="settings-dialog-body">
+        <!-- Rendered dynamically depending on node.type -->
+      </div>
+      <div class="dialog-actions" style="padding: 0 10px 10px 10px;">
+        <button class="bevel-raised dialog-btn" onclick="saveNodeSettings()">Save</button>
+        <button class="bevel-raised dialog-btn" onclick="closeSettingsModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Modal: Flow Folder (โฟลเดอร์ flow ที่บันทึกไว้) -->
+  <div id="folder-dialog-overlay" class="retro-modal-overlay">
+    <div class="bevel-raised retro-dialog-box" id="folder-dialog-box">
+      <div class="retro-titlebar">
+        <span>MY FLOWS</span>
+        <div class="retro-close-btn" onclick="closeFolderPopup()">✕</div>
+      </div>
+      <div class="dialog-content">
+        <div class="folder-toolbar">
+          <span class="folder-hint" id="folder-current">ยังไม่ได้เปิดไฟล์</span>
+          <button class="bevel-raised dialog-btn" onclick="newFlowFromScratch()">New Flow</button>
+        </div>
+        <div id="flow-grid" class="flow-grid">
+          <div class="flow-empty">ยังไม่มีไฟล์ที่บันทึกไว้</div>
+        </div>
+      </div>
+      <div class="dialog-actions" style="padding: 0 10px 10px 10px;">
+        <button class="bevel-raised dialog-btn" onclick="closeFolderPopup()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Modal: Save Flow (ตั้งชื่อไฟล์ครั้งแรก) -->
+  <div id="saveas-dialog-overlay" class="retro-modal-overlay">
+    <div class="bevel-raised retro-dialog-box" style="width: 300px;">
+      <div class="retro-titlebar">
+        <span>SAVE FLOW</span>
+        <div class="retro-close-btn" onclick="closeSaveAsDialog()">✕</div>
+      </div>
+      <div class="dialog-content">
+        <label for="saveas-name" style="font-weight: bold;">File Name:</label>
+        <input type="text" id="saveas-name" class="bevel-sunken search-input" autocomplete="off" placeholder="my-flow">
+        <div class="dialog-actions">
+          <button class="bevel-raised dialog-btn" onclick="confirmSaveFlow()">Save</button>
+          <button class="bevel-raised dialog-btn" onclick="closeSaveAsDialog()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="audio-process" src="do_process.mp3" preload="auto"></audio>
+  <audio id="audio-drag" src="drag.mp3" preload="auto"></audio>
+  <audio id="audio-click" src="click.mp3" preload="auto"></audio>
+  <audio id="audio-plug" src="plug.mp3" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
